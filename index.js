@@ -28,7 +28,8 @@ cron.schedule("0 8 * * 5-6", () => {
         console.log(val)
         client.calls
         .create({
-            url: 'http://3368a56a.ngrok.io',
+            url: 'http://3.83.128.129/',
+            // url: 'http://3368a56a.ngrok.io',
             // url: 'http://placeandsound.best/',
             to: `+${val}`,
             from: '+16475565651'
@@ -51,7 +52,7 @@ app.post('/join', function (req, res) {
     client.calls
         .create({
             // url: 'http://placeandsound.best/',
-            url: 'http://3368a56a.ngrok.io',
+            url: 'http://3.83.128.129/',
             to: `+${number}`,
             from: '+16475565651'
         })
