@@ -1,0 +1,108 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+
+
+.App-header {
+  /*background-color: #282c34;*/
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.phoneNumber {
+  color: blue;
+}
+
+.button:hover {
+  background: white;
+  margin-bottom: -10px;
+}
+
+.button {
+  background: grey;
+    border: 1px outset blue;
+    box-shadow: 5px 5px #000;
+    font-size: 20px;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+
+.disclaimer {
+  color: black;
+  font-size: 10px;
+  bottom: 20px;
+  position: fixed;
+}
+
+.message {
+  color: white;
+  font-size: 20px;
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+}
+
+.error-message {
+  color: red;
+  font-size: 20px;
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+}
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:900i&display=swap');
+
+body{
+  /*background:yellow;*/
+  background: #d5d5d2;
+  font-family: 'Montserrat', sans-serif;
+}
+
+@media (max-width: 800px) {
+  /* CSS that should be displayed if width is equal to or less than 800px goes here */
+
+  span {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 40px !important;
+    letter-spacing:0.1em;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: white;
+    /*text-shadow: 6px 6px #ff1f8f,*/
+    text-shadow: 6px 6px #09d3ac,
+              12px 12px #000000;
+  }
+}
+
+@media (min-width: 800px) {
+  /* CSS that should be displayed if width is equal to or less than 800px goes here */
+
+  span {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 120px !important;
+    letter-spacing:0.1em;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: white;
+    text-shadow: 6px 6px #09d3ac,
+              12px 12px #000000;
+  }
+}
