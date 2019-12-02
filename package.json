@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts":{
+    "start:local": "NODE_ENV=local node index.js",
+    "start:prod": "NODE_ENV=prod node index.js"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "express": "^4.17.1",

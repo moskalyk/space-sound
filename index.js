@@ -5,7 +5,7 @@ const hypercore = require('hypercore');
 const feed = hypercore('./numbers', {valueEncoding: 'json'})
 
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
-const PORT = 80;
+const PORT = 8080;
 const moment = require('moment');
 const path = require('path');
 const express = require('express');
@@ -18,6 +18,16 @@ const cron = require("node-cron");
 app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, '/my-app/build')));
 
+let callbackUrl;
+
+if(process.env.NODE_ENV =='local'){
+    callbackUrl = 'http://2b102c9a.ngrok.io'
+}else{
+    callbackUrl = 'http://3.83.128.129/'
+}
+
+//6478737402
+
 cron.schedule("0 8 * * 5-6", () => {
     console.log("---------------------");
     console.log("Running Cron Job");
@@ -26,9 +36,10 @@ cron.schedule("0 8 * * 5-6", () => {
         
     readStream.on('data', (val) => {
         console.log(val)
+
         client.calls
         .create({
-            url: 'http://3.83.128.129/',
+            url: callbackUrl,
             // url: 'http://3368a56a.ngrok.io',
             // url: 'http://placeandsound.best/',
             to: `+${val}`,
@@ -48,11 +59,13 @@ cron.schedule("0 8 * * 5-6", () => {
 app.post('/join', function (req, res) {
     const number = req.body.phoneNumber;
     console.log(`New Joiner ${number}`)
+    console.log(`Using: ${callbackUrl}`)
     //Call
     client.calls
         .create({
             // url: 'http://placeandsound.best/',
-            url: 'http://3.83.128.129/',
+            // url: 'http://3.83.128.129/',
+            url: `${callbackUrl}/welcome`,
             to: `+${number}`,
             from: '+16475565651'
         })
@@ -60,45 +73,13 @@ app.post('/join', function (req, res) {
         .catch((e) => {
             console.log(e)
         })
+
     //add to list
     feed.append(number, (e, val) => {
         if(e) res.sendStatus(500)
         else res.send({number: number})
     });
 });
-
-// app.get('/data', function (req, res) {
-
-// })
-
-// app.get('/call', function (req, res) {
-//     client.calls
-//         .create({
-//          url: 'http://3368a56a.ngrok.io',
-//          to: '+16478737402',
-//          from: '+16475565651'
-//         })
-//         .then(call => console.log(call.sid))
-//         .catch((e) => {
-//             console.log(e)
-//         })
-//     res.sendStatus(200)
-// });
-
-// app.get('/call', function (req, res) {
-//     twiml.say({
-//         voice: 'woman',
-//         language: 'en',
-//       },`Hello from your pals at Place & Sound. The top place is ${listing.place}. The sound is ${listing.sound}. Enjoy the dancing.`);
-
-//     res.writeHead(200, { 'Content-Type': 'text/xml' });
-//     res.end(twiml.toString());
-// });
-
-// app.get('/', function (req, res) {
-//     console.log(path.join(__dirname, '/my-app/build/', 'index.html'))
-//   res.sendFile(path.join(__dirname, '/my-app/build/', 'index.html'));
-// });
     
 app.post('/list', function(req, res){
     if(req.body.secret == 'howdie'){
@@ -111,7 +92,35 @@ app.post('/list', function(req, res){
     }
 })
 
+app.post('/welcome', function(req, res){
+     console.log('called in welcome')
+    scrape().then((listing) => {
+        console.log(req)
+        const twiml = new VoiceResponse();
+
+        twiml.say({
+            voice: 'woman',
+            language: 'en',
+          }, `Welcome to the Place & Sound bot service. The top place is ${listing.place}. The sound is ${listing.sound}. Enjoy the dancing.`);
+
+        res.writeHead(200, { 'Content-Type': 'text/xml' });
+        res.end(twiml.toString());
+
+    }).catch((e) => {
+        const twiml = new VoiceResponse();
+
+        twiml.say({
+            voice: 'alice',
+            language: 'en',
+          },`Welcome to the Place & Sound bot service. Sorry, there are no events on our radar. Smile and check back this weekend. Au revoir.`);
+
+        res.writeHead(200, { 'Content-Type': 'text/xml' });
+        res.end(twiml.toString());
+    })
+})
+
 app.post('/', function(req, res){
+    console.log('called')
 	scrape().then((listing) => {
 		console.log(req)
 		const twiml = new VoiceResponse();
@@ -128,9 +137,9 @@ app.post('/', function(req, res){
         const twiml = new VoiceResponse();
 
         twiml.say({
-            voice: 'woman',
+            voice: 'alice',
             language: 'en',
-          },`Hello from your pals at Place & Sound. There are no events on our radar.`);
+          },`Hello from your pals at Place & Sound. Sorry, there are no events on our radar. Smile and check back this weekend.`);
 
         res.writeHead(200, { 'Content-Type': 'text/xml' });
         res.end(twiml.toString());
